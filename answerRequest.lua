@@ -1,22 +1,25 @@
 #!/usr/bin/lua
 
 function answerRequest (request)
+    local fileStatus = 0;
     request = cutTrailingSlash( request )
     local fh , err = io.open( "./" .. request, "r" )
     if fh == nil then
+        status = 1;
         fh , err = io.open( "./error.html", "r" )
+        return prepareHeader( fileStatus ) .. prepareContent( fh )
+    else
+        return prepareHeader( fileStatus ) .. prepareContent( fh )
     end 
-    return prepareHeader() .. prepareContent( fh )
 end 
 
-function prepareHeader ()
-    local status = 'HTTP/1.1 200 OK\r\n'
-    local date   = 'Date: Sun, 04 Mar 2012 18:54:40 GMT\r\n'
-    local servername = 'Server: BadMoonRising/0.01\r\n'
-    local conn = 'Connection: close\r\n'
-    local contenttype = 'Content-Type: text/html; charset=iso-8859-1\r\n\r\n'
+function prepareHeader ( status )
     
-    return status .. date .. servername .. conn .. contenttype
+    return prepareStatus( status ) 
+        .. prepareDate()
+        .. prepareServername() 
+        .. prepareConnType()
+        .. prepareContentType()
 end 
 
 function prepareContent (fh)
@@ -35,4 +38,35 @@ function cutTrailingSlash (string)
     else
         return string
     end 
-end 
+end
+
+function prepareStatus ( fileStatus )
+    if fileStatus == 1 then
+        local status = 'HTTP/1.1 200 OK\r\n'
+        return status
+    else
+        local status = 'HTTP/1.1 404 Not Found\r\n'
+        return status
+    end
+
+end
+
+function prepareDate ()
+    local date   = 'Date: Sun, 04 Mar 2012 18:54:40 GMT\r\n'
+    return date
+end
+
+function prepareServername ()
+    local servername = 'Server: BadMoonRising/0.01\r\n'
+    return servername
+end
+
+function prepareConnType ()
+    local conntype = 'Connection: close\r\n'
+    return conntype
+end
+
+function prepareContentType ()
+    local contenttype = 'Content-Type: text/html; charset=iso-8859-1\r\n\r\n'
+    return contenttype
+end
