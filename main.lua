@@ -8,8 +8,7 @@ function getRequest (request)
         e = request:find( " ", s )
         if e == nil then break 
         else
-            local tmpstr = request:sub( s, e - 1 )
-            list[counter] = tmpstr
+            list[counter] = request:sub( s, e - 1 )
             s = e + 1
         end
     end
@@ -28,17 +27,11 @@ end
 function prepareHeader ()
     local status = 'HTTP/1.1 200 OK\r\n'
     local date   = 'Date: Sun, 04 Mar 2012 18:54:40 GMT\r\n'
-    local servername = 'Server: Apache/2.2.14 (Ubuntu)\r\n'
+    local servername = 'Server: BadMoonRising/0.01\r\n'
     local conn = 'Connection: close\r\n'
     local contenttype = 'Content-Type: text/html; charset=iso-8859-1\r\n\r\n'
 
-    local html = ""
-    html = html .. status
-    html = html .. date
-    html = html .. servername
-    html = html .. conn
-    html = html .. contenttype
-    return html
+    return status .. date .. servername .. conn .. contenttype
 end
 
 function prepareContent (fh)
@@ -54,6 +47,8 @@ end
 function cutTrailingSlash (string)
     if string:find( "/" ) == 1 then
         return string:sub( 2 )
+    else
+        return string
     end
 end
 
