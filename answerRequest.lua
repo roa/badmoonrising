@@ -52,7 +52,7 @@ function prepareStatus ( fileStatus )
 end
 
 function prepareDate ()
-    local date   = 'Date: Sun, 04 Mar 2012 18:54:40 GMT\r\n'
+    local date   = 'Date: ' .. os.date ( "%a, %d %b %Y %X" ) .. ' GMT\r\n'
     return date
 end
 
