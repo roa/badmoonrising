@@ -5,7 +5,7 @@ function answerRequest (request)
     request = cutTrailingSlash( request )
     local fh , err = io.open( "./" .. request, "r" )
     if fh == nil then
-        status = 1;
+        fileStatus = 1;
         fh , err = io.open( "./error.html", "r" )
         return prepareHeader( fileStatus ) .. prepareContent( fh )
     else
