@@ -27,14 +27,42 @@ while 1 do
     if err then print(err) end
 
     for i, cli in ipairs(list) do
+        local request = {}
 
-        local line, err = client:receive()
-
-        if not err then
-            local getList = getRequest(line)
-            if getList[1] == "GET" then
+        while 1 do
+            local line
+            local err
+            local rest
+            local key
+            local value
+            line, err, rest = client:receive()
+            key, value = cutHeader(line, " ")
+            
+            if key ~= nil and value ~= nil then
+                request[key] = value
+            end
+            if rest ~= nil then
+                request["post"] = rest
+                print(rest)
+                break
+            end
+        end
+        
+        if request["GET"] ~= nil then
+            local getList = getRequest(request["GET"], " ")
+            if getList[1] ~= nil then
                 client:send( answerRequest( getList[2] ) )
             end
+        end
+        if request["POST"] ~= nil then
+            local getList = getRequest(request["POST"], " ")
+            if getList[1] ~= nil then
+                client:send( answerRequest( getList[2] ) )
+            end
+        end
+
+        for k,l in pairs(request) do
+            print("1: " .. k .. "2: " .. l)
         end
 
         client:close()
