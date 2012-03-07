@@ -1,9 +1,10 @@
 #!/usr/bin/lua
 
-function answerRequest (request)
+function answerRequest ( request )
     local fileStatus = 0;
     request = cutTrailingSlash( request )
     local fh , err = io.open( "./" .. request, "r" )
+
     if fh == nil then
         fileStatus = 1;
         fh , err = io.open( "./error.html", "r" )
@@ -22,17 +23,19 @@ function prepareHeader ( status )
         .. prepareContentType()
 end 
 
-function prepareContent (fh)
+function prepareContent ( fh )
     local html = ""
+    
     while true do
-        local line = fh.read(fh)
+        local line = fh.read( fh )
         if not line then break end
         html = html .. line
-    end 
+    end
+
     return html
 end 
 
-function cutTrailingSlash (string)
+function cutTrailingSlash ( string )
     if string:find( "/" ) == 1 then
         return string:sub( 2 ) 
     else
@@ -48,7 +51,6 @@ function prepareStatus ( fileStatus )
         local status = 'HTTP/1.1 404 Not Found\r\n'
         return status
     end
-
 end
 
 function prepareDate ()
