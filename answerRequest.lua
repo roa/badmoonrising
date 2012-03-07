@@ -44,7 +44,7 @@ function cutTrailingSlash ( string )
 end
 
 function prepareStatus ( fileStatus )
-    if fileStatus == 1 then
+    if fileStatus == 0 then
         local status = 'HTTP/1.1 200 OK\r\n'
         return status
     else

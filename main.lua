@@ -16,7 +16,7 @@ while true do
     local err = ""
     
     if client then
-        client:settimeout(0.1)
+        client:settimeout(0)
         table.insert( selectlist, client )
     end
 
@@ -59,10 +59,10 @@ while true do
             end
         end
 
-        --Debug Information
-        for k,l in pairs( request ) do
-            print( " key: " .. k .. " value: " .. l )
-        end
+        --Debug Information 
+        --for k,l in pairs( request ) do
+        --    print( " key: " .. k .. " value: " .. l )
+        --end
 
         client:close()
         table.remove( selectlist, i )
