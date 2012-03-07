@@ -3,11 +3,11 @@
 function answerRequest ( request )
     local fileStatus = 0;
     request = cutTrailingSlash( request )
-    local fh , err = io.open( "./" .. request, "r" )
+    local fh , err = io.open( "./content/" .. request, "r" )
 
     if fh == nil then
         fileStatus = 1;
-        fh , err = io.open( "./error.html", "r" )
+        fh , err = io.open( "./content/error.html", "r" )
         return prepareHeader( fileStatus ) .. prepareContent( fh )
     else
         return prepareHeader( fileStatus ) .. prepareContent( fh )

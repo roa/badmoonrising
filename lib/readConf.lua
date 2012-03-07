@@ -1,9 +1,13 @@
 #!/usr/bin/lua
 
+require( "lfs" )
+
+local workDir = lfs.currentdir()
+
 config = {}
 
 function readConfig ()
-    confFile = "/home/roa/programming/badmoonrising/config/bad.conf"
+    confFile = workDir .. "/config/bad.conf"
     io.input( confFile )
 
     while true do
@@ -27,10 +31,13 @@ function cutLine ( line )
         key   = line:sub( 0, e -1 )
         value = line:sub( e + 1 )
     end
+
     if     key == "root" then
         validateRoot( key, value )
     elseif key == "port" then
         validatePort( key, value )
+    elseif key == "listen" then
+        validateIP( key, value)
     else
         return nil
     end
@@ -44,8 +51,26 @@ function validatePort ( key, value )
     config[key] = value;
 end
 
-function getConf ()
+function validateIP ( key, value )
+    config[key] = value;
+end
+
+function getConf ( key )
     for k, v in pairs(config) do
-        print("key: " .. k .. " value: " .. v)
+        if k == key then
+            return v
+        end
     end
+end
+
+function getRoot ()
+    return getConf( "root" )
+end
+
+function getPort ()
+    return getConf( "port")
+end
+
+function getIP ()
+    return getConf( "listen" )
 end
