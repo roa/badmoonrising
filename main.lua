@@ -59,6 +59,7 @@ while true do
             end
         end
 
+        --Debug Information
         for k,l in pairs( request ) do
             print( " key: " .. k .. " value: " .. l )
         end
