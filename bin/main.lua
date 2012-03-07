@@ -1,7 +1,8 @@
 #/usr/bin/lua
 
-require( "getRequest" )
-require( "answerRequest" )
+require( "../lib/getRequest" )
+require( "../lib/answerRequest" )
+require( "../lib/readConf" )
 
 local socket = require( "socket" )
 
@@ -10,6 +11,8 @@ local server = assert( socket.bind( "127.0.0.1", "9035" ) )
 local ip, port = server:getsockname()
 
 local selectlist = {}
+readConfig()
+getConf()
 
 while true do
     local client = server:accept()
