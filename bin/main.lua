@@ -16,11 +16,12 @@ while true do
     local err = ""
     
     if client then
-        client:settimeout(0)
+        client:settimeout( nil )
+
         table.insert( selectlist, client )
     end
 
-    readlist, _, err = socket.select( selectlist, nil, 0.1 )
+    readlist, _, err = socket.select( selectlist, nil, nil )
     
     if err then print( err ) end
 
@@ -40,13 +41,15 @@ while true do
             
             if key ~= nil and value ~= nil then
                 request[key] = value
+            else
+                break
             end
             if rest ~= nil then
                 request.post = rest
                 break
             end
         end
-        
+
         if request.GET ~= nil then
             local getList = getRequest( request.GET, " " )
             if getList[1] ~= nil then
@@ -61,10 +64,11 @@ while true do
             end
         end
 
-        -- Debug Information prints complete request
-        --for k,l in pairs( request ) do
-        --    print( " key: " .. k .. " value: " .. l )
-        --end
+        --[[ Debug Information prints complete request
+        for k,l in pairs( request ) do
+            print( " key: " .. k .. " value: " .. l )
+        end
+        --]]
 
         client:close()
         table.remove( selectlist, i )

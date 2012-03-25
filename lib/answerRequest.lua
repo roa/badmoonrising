@@ -2,36 +2,57 @@
 
 function answerRequest ( request )
     local fileStatus = 0;
-    request = cutTrailingSlash( request )
-    local fh , err = io.open( "./content/" .. request, "r" )
+    local req
+    local ext
 
+    request = cutTrailingSlash( request )
+
+    if #request == 0 then
+        request = "index.html"
+    end
+    
+    req, ext = splitReq( request )
+
+    local fh , err = io.open( "./content/" .. request, "rb" )
+    
     if fh == nil then
         fileStatus = 1;
         fh , err = io.open( "./content/error.html", "r" )
         return prepareHeader( fileStatus ) .. prepareContent( fh )
     else
-        return prepareHeader( fileStatus ) .. prepareContent( fh )
+        return prepareHeader( fileStatus, ext ) .. prepareContent( fh, ext )
     end 
-end 
+end
 
-function prepareHeader ( status )
+function prepareHeader ( status, ext )
     
     return prepareStatus( status ) 
         .. prepareDate()
         .. prepareServername() 
-        .. prepareConnType()
-        .. prepareContentType()
+        .. prepareConnType( )
+        .. prepareContentType( ext )
 end 
 
-function prepareContent ( fh )
-    local html = ""
-    
-    while true do
-        local line = fh.read( fh )
-        if not line then break end
-        html = html .. line
-    end
+function prepareContent ( fh, ext )
+    local html
+    if ext == "html" then
+        html = ""
+        while true do
+            local line = fh.read( fh )
+            if not line then break end
+            html = html .. line
+        end
+    elseif ext == "jpg" or ext == "jpeg" then
+        html = fh:read("*a")
+    else
+        html = ""
+        while true do
+            local line = fh.read( fh )
+            if not line then break end
+            html = html .. line
+        end
 
+    end
     return html
 end 
 
@@ -68,7 +89,23 @@ function prepareConnType ()
     return conntype
 end
 
-function prepareContentType ()
-    local contenttype = 'Content-Type: text/html; charset=iso-8859-1\r\n\r\n'
+function prepareContentType ( ext )
+    local contenttype
+    if ext == "html" then
+        contenttype = 'Content-Type: text/html; charset=iso-8859-1\r\n\r\n'
+    elseif ext == "jpg" or ext == "jpeg" then
+        contenttype = 'Content-Type: image/jpeg\r\n\r\n'
+    else
+        contenttype = 'Content-Type: text/html; charset=iso-8859-1\r\n\r\n'
+    end
     return contenttype
+end
+
+function splitReq( request )
+    local req
+    local ext
+    local found = request:find( '%.' )
+    req = request:sub( 1, found - 1 )
+    ext = request:sub( found + 1 )
+    return req, ext;
 end
